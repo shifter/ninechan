@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container" style="width:400px;">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4>Register</h4>
+    </div>
+    <div class="panel-body">
+      <form class="form-signin" role="form" action="/register" method="post" >
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" class="form-control" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" name="password" required>
+        </div>
+        <button class="btn btn-sm btn-primary" type="submit">Register</button>
+      </form>
+    </div>
+  </div>
+</div> 
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block body %}
+
+{% if mails %}
+	{% for mail in mails %}
+	<div class="container-fluid container-post" style="padding:0;">
+		<div class="panel panel-default" style="margin:0;">
+			<div class="panel-heading">
+				<h4 style="margin:0;"><i>{{ mail.subject }}</i> from <strong>{{ mail.sender }}</strong></h4>
+			</div>
+			<div class="panel-body">
+				<pre>{{ mail.message }}</pre>
+			</div>
+		</div>
+	</div>
+	{% endfor %}
+{% endif %}
+{% endblock %}

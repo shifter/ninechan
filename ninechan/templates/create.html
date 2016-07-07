@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container-fluid container-post" style="padding:0;">
+	<div class="panel panel-default" style="margin:0;">
+    <div class="panel-heading">
+      <h4 style="margin:0;">Create a Post</h4>
+    </div>
+    <div class="panel-body">
+      <form class="form-upload" role="form" action="/post" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" name="title" required autofocus>
+        </div>
+        <div class="form-group">
+          <label for="image">Image</label>
+          <input type="file" class="form-control" name="image" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Description (optional)</label>
+            <textarea class="form-control" name="description"></textarea>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="anonymous"> Anonymous post
+          </label>
+        </div>
+        <button class="btn btn-sm btn-primary" type="submit" value="doUpload">Upload</button>
+      </form>
+    </div>
+  </div>
+</div> 
+{% endblock %}

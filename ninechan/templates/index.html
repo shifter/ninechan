@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="jumbotron">
+        <h1>Welcome</h1>
+        <p>Death there mirth way the noisy merit. Piqued shy spring nor six though mutual living ask extent. Replying of dashwood advanced ladyship smallest disposal or. Attempt offices own improve now see. Called person are around county talked her esteem. Those fully these way nay thing seems. </p>
+</div>
+
+{% for post in posts %}
+<div class="container-fluid container-post" style="padding:0;">
+	<div class="panel panel-default" style="margin:0;">
+		<div class="panel-heading">
+			{% if post.anonymous %}
+			<h4 style="margin:0;"><i>{{ post.title|safe }}</i> by <strong>anonymous</strong></h4>
+			{% else %}
+			<h4 style="margin:0;"><i>{{ post.title|safe }}</i> by <strong>{{ post.author.username }}</strong></h4>
+			{% endif %}
+		</div>
+		<div class="panel-body">
+			<div class="row">
+			    <div class="col-xs-12">
+			    	{% set placeholder_text = ["images/", post.image ] %}
+			        <img src="{{ url_for('static', filename=placeholder_text|join ) }}" style="max-width:100%;" />
+			    </div>
+			</div>
+			<div class="row">
+			    <div class="col-xs-12">
+			    	<ul class="list-unstyled" style="margin-top: 10px;">
+			    		{% set count = 0 %}
+			    		{% for comment in comments %}
+			    			{% set count = count + 1 %}
+			    			{% if count < 4 %}
+					    		{% if post.id == comment.post.id %}
+					    		<li>
+                                    <div class="panel panel-primary" style="margin-bottom: 10px;">
+                                        <div class="panel-heading" style="padding:0 5px 0 5px;">
+                                            {% if comment.anonymous %}
+                                            <strong>anonymous</strong> ({{ comment.id.generation_time }})
+                                            {% else %}
+                                            <strong>{{ comment.author.username }}</strong> ({{ comment.id.generation_time }})
+						        	        {% endif %}
+                                        </div>
+                                        <div class="panel-body" style="padding:5px;">
+                                            <p style="margin:0;word-wrap:break-word;">{{ comment.content }}</p>
+                                        </div>
+                                    </div>
+							    </li>
+							    {% endif %}
+						    {% endif %}
+					    {% endfor %}
+					</ul>
+			    </div>
+			</div>
+			<div class="row">
+			    <div class="col-xs-12">
+					<a href="/post/{{ post.image }}" class="btn btn-success btn-sm">Read more</a>
+			   	</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endfor %}
+
+{% endblock %}

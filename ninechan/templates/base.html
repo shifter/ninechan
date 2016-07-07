@@ -1,0 +1,39 @@
+<!doctype html>
+<head>
+<title>Picture of the Week</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/jumbotron-narrow.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <ul class="nav nav-pills pull-right" role="tablist">
+      <li role="presentation"><a href="/">Home</a></li>
+
+      {% if not logged_in %}
+      <li role="presentation"><a href="/register">Register</a></li>
+      <li role="presentation"><a href="/login">Login</a></li>
+      {% else %}
+      <li role="presentation"><a href="/post">Create</a></li>
+      <li role="presentation"><a href="/mail">Mail</a></li>
+      <li role="presentation"><a href="/logout">Logout</a></li>
+      {% endif %}
+    </ul>
+    <h3 class="text-muted">9chan</h3>
+  </div>
+
+    {%  if error  %}
+    <div class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+    {% endif %}
+    {% block body %}{% endblock %}
+
+<hr style="margin:30px 0 20px 0 !important" />
+<footer>
+    <p>9chan 2015</p>
+</footer>
+</div>
+</body>

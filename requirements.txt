@@ -1,0 +1,7 @@
+Flask
+Flask-Script
+Flask-SQLAlchemy
+wtforms
+flask-mongoengine
+nodeenv
+mysql-python

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container-fluid container-post" style="padding:0;">
+	<div class="panel panel-default" style="margin:0;">
+		<div class="panel-heading">
+			{% if post.anonymous %}
+			<h4 style="margin:0;"><i>{{ post.title }}</i> by <strong>anonymous</strong></h4>
+			{% else %}
+			<h4 style="margin:0;"><i>{{ post.title }}</i> by <strong>{{ post.author.username }}</strong></h4>
+			{% endif %}
+		</div>
+		<div class="panel-body">
+			<div class="row">
+			    <div class="col-xs-12">
+			    	{% set placeholder_text = ["images/", post.image ] %}
+			        <img src="{{ url_for('static', filename=placeholder_text|join ) }}" style="max-width:100%;" />
+			    </div>
+			</div>
+			<hr />
+        	{% if post.description %}
+            <h3>Description:</h3>
+        	<pre>{{ post.description|safe }}</pre>
+            <hr />
+        	{% endif %}
+		    <div class="row">
+		    	<div class="container" style="width:50%;margin:auto;">
+			    	<strong>Create a comment</strong>
+			   		<form action="/post/{{ post.image }}" method=post class="form">
+			            <div class="form-group">
+                            <textarea name="content"></textarea>
+			            </div>
+	                    <div class="checkbox">
+				          <label>
+				            <input type="checkbox" name="anonymous"> Anonymous comment
+				          </label>
+				        </div>
+			            <button type="submit" class="btn btn-sm btn-primary">Comment</button>
+			        </form>
+		        </div>
+		    </div>
+		    <hr />
+			<div class="row">
+			    <div class="col-xs-12">
+			    	<ul class="list-unstyled" style="margin-top: 10px;">
+			    			<li><h3 style="margin:0 0 20px 0 !important;">Comments:</h3></li>
+			    		{% for comment in comments %}
+				    		{% if post.id == comment.post.id %}
+					    		<li>
+                                    <div class="panel panel-primary" style="margin-bottom: 10px;">
+                                        <div class="panel-heading" style="padding:0 5px 0 5px;">
+                                            {% if comment.anonymous %}
+                                            <strong>anonymous</strong> ({{ comment.id.generation_time }})
+                                            {% else %}
+                                            <strong>{{ comment.author.username|safe }}</strong> ({{ comment.id.generation_time }})
+						        	        {% endif %}
+                                        </div>
+                                        <div class="panel-body" style="padding:5px;">
+                                            <p style="margin:0;word-wrap:break-word;">{{ comment.content|safe }}</p>
+                                        </div>
+                                    </div>
+							    </li>
+						    {% endif %}
+					    {% endfor %}
+					</ul>
+			    </div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
