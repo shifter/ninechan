@@ -12,12 +12,11 @@ __author__ = 'takeshix'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    '''Displays the index page with all available posts.'''
+    """Displays the index page with all available posts."""
     if flask.request.method == 'GET':
         session = None
         posts = Post.objects()
         comments = Comment.objects()
-
         if flask.request.cookies and flask.request.cookies.get('SESSIONID'):
             try:
                 session = Session.objects(token=flask.request.cookies.get('SESSIONID')).first()
@@ -32,7 +31,7 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    '''Displays the registration page. POST requests create a new user.'''
+    """Displays the registration page. POST requests create a new user."""
     if flask.request.method == 'GET':
         session = None
         if flask.request.cookies and flask.request.cookies.get('SESSIONID'):
@@ -48,16 +47,13 @@ def register():
     else:
         UserForm = flask_mongoengine_wtf.model_form(User, field_args = {
             'username': {
-                'validators': [wtforms.validators.Length(max=10)]
-            },
+                'validators': [wtforms.validators.Length(max=10)]},
             'password': {
-                'validators': [wtforms.validators.Length(min=6)]
-            }
-        })
+                'validators': [wtforms.validators.Length(min=6)]}})
 
         form = UserForm(flask.request.form)
-
         if form.validate():
+            user = None
             try:
                 user = User.objects(username=flask.request.form.get('username'))
             except:
@@ -76,7 +72,7 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    '''Display the login page. POST requests login users.'''
+    """Display the login page. POST requests login users."""
     if flask.request.method == 'GET':
         session = None
         if flask.request.cookies and flask.request.cookies.get('SESSIONID'):
@@ -94,16 +90,13 @@ def login():
             exclude = ['email'],
             field_args = {
             'username': {
-                'validators': [wtforms.validators.Length(max=10)]
-            },
+                'validators': [wtforms.validators.Length(max=10)]},
             'password': {
-                'validators': [wtforms.validators.Length(min=6)]
-            }
-        })
+                'validators': [wtforms.validators.Length(min=6)]}})
 
         form = UserForm(flask.request.form)
-
         if form.validate():
+            user = None
             try:
                 user = User.objects(username=flask.request.form.get('username')).first()
             except:
@@ -125,12 +118,11 @@ def login():
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    '''Logout a user, wipe his session.'''
+    """Logout a user, wipe his session."""
     if not flask.request.cookies or not flask.request.cookies.get('SESSIONID'):
         resp = flask.make_response(flask.render_template('login.html'))
         resp.set_cookie('SESSIONID', '')
         return resp
-
     try:
         session = Session.objects(token=flask.request.cookies.get('SESSIONID')).first()
         if not session:
@@ -138,7 +130,6 @@ def logout():
         session.delete()
     except:
         pass
-
     resp = flask.make_response(flask.render_template('index.html'))
     resp.set_cookie('SESSIONID', '')
     return resp
@@ -146,7 +137,8 @@ def logout():
 
 @app.route('/post/<post_id>', methods=['GET', 'POST'])
 def show_post(post_id):
-    '''Show a single post by its post_id. POST requests create comments.'''
+    """Show a single post by its post_id. POST requests create comments."""
+    post = comments = session = None
     if flask.request.method == 'GET':
         session = None
         if flask.request.cookies and flask.request.cookies.get('SESSIONID'):
@@ -154,12 +146,11 @@ def show_post(post_id):
                 session = Session.objects(token=flask.request.cookies.get('SESSIONID')).first()
             except:
                 pass
-
         try:
             post = Post.objects(image=post_id).get()
             comments = Comment.objects(post=post.id)
         except Exception as e:
-            print e
+            print(e)
             flask.abort(404)
 
         if session:
@@ -173,7 +164,6 @@ def show_post(post_id):
             resp = flask.make_response(flask.render_template('login.html'))
             resp.set_cookie('SESSIONID', '')
             return resp
-
         try:
             session = Session.objects(token=flask.request.cookies.get('SESSIONID')).first()
             if not session:
@@ -203,7 +193,7 @@ def show_post(post_id):
 
 @app.route('/post', methods=['GET','POST'])
 def create_post():
-    '''Display the create page. POST requests create a new post.'''
+    """Display the create page. POST requests create a new post."""
     if flask.request.cookies.get('SESSIONID'):
         try:
             session = Session.objects(token=flask.request.cookies.get('SESSIONID')).first()
@@ -222,13 +212,11 @@ def create_post():
 
         post = Post(session.user)
         file = flask.request.files['image']
-
         if not validate_xss_hard(flask.request.form.get('title')):
             return flask.render_template('create.html', error='XSS attempt in title field!')
 
         post.title = flask.request.form.get('title')
         post.image = secure_filename(file.filename)
-
         if flask.request.form.get('description'):
             post.description = flask.request.form.get('description')
 
@@ -239,7 +227,6 @@ def create_post():
 
         post.save()
         file.save('{}/{}'.format(app.config['UPLOAD_DIR'], post.image))
-
         return flask.redirect(flask.url_for('index'))
 
 
@@ -260,21 +247,18 @@ def mailbox():
         return flask.render_template('mailbox.html', logged_in=True, mails=mails)
     else:
         if flask.request.form.get('receiver') and \
-            flask.request.form.get('subject') and \
-            flask.request.form.get('message'):
+                flask.request.form.get('subject') and \
+                flask.request.form.get('message'):
 
             if flask.request.form.get('receiver') == session.user.username:
                 return flask.render_template('mailbox.html',
                                              logged_in=True,
-                                             error='You cannot send messages to yourself'
-                )
-
+                                             error='You cannot send messages to yourself')
             mail = Mails(
                 sender=session.user.username,
                 receiver=flask.request.form.get('receiver'),
                 subject=flask.request.form.get('subject'),
-                message=flask.request.form.get('message')
-            )
+                message=flask.request.form.get('message'))
             sql.session.add(mail)
             sql.session.commit()
             return flask.redirect(flask.url_for('mailbox'))
@@ -320,8 +304,7 @@ def search():
                 'select * from ninechan.mails where '
                 'receiver like \'%{0}%\' or ' \
                 'subject like \'%{0}%\' or ' \
-                'message like \'%{0}%\''.format(flask.request.form.get('searchterm'))
-                )
+                'message like \'%{0}%\''.format(flask.request.form.get('searchterm')))
             sql.session.commit()
         except:
             pass
@@ -337,7 +320,6 @@ def search():
 
         if not mails:
             return flask.redirect(flask.url_for('mailbox'))
-
         return flask.render_template('mail.html', logged_in=True, mails=mails)
     else:
         return flask.redirect(flask.url_for('mailbox'))
@@ -345,12 +327,13 @@ def search():
 
 @app.route('/admin', methods=['GET'])
 def admin():
-    '''Display the admin section. Only superusers are allowed to view this page.'''
+    """Display the admin section. Only superusers are allowed to view this page."""
     if not flask.request.cookies or not flask.request.cookies.get('SESSIONID'):
         resp = flask.make_response(flask.render_template('login.html'))
         resp.set_cookie('SESSIONID', '')
         return resp
 
+    session = None
     try:
         session = Session.objects(token=flask.request.cookies.get('SESSIONID')).first()
         if not session:
@@ -360,7 +343,6 @@ def admin():
 
     if not session.superuser:
         flask.abort(403)
-
     return flask.render_template('admin.html', logged_in=True)
 
 @app.route('/secret', methods=['GET'])
@@ -377,9 +359,7 @@ def secret():
             'username=\'%{0}%\' or ' \
             'password=\'%{0}%\''.format(
                 flask.request.authorization.get('username'),
-                flask.request.authorization.get('password')
-            )
-            )
+                flask.request.authorization.get('password')))
         sql.session.commit()
     except:
         return 'Try harder', 401

@@ -8,16 +8,12 @@ __all__ = [
     'validate_xss_hard',
     'escape_xss_strings',
     'generate_session_token',
-    'secure_filename'
-]
+    'secure_filename']
 
 
 def validate_xss_easy(string):
-    print "checking: {}".format(string)
     if '<script>' in string:
-        print "matched <script>"
         return False
-
     return True
 
 
@@ -47,7 +43,7 @@ def random_hex_string(size=8):
 
 
 def secure_filename(name):
-    '''Generates a secure filename for uploaded files.'''
+    """Generates a secure filename for uploaded files."""
     hasher = hashlib.md5()
     hasher.update('{}{}\o/'.format(random_string(),name))
     return hasher.hexdigest()

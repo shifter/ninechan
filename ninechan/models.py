@@ -5,43 +5,39 @@ __all__ = ['User', 'Session', 'Post', 'Comment', 'Mails']
 
 
 class User(db.Document):
-    '''Database user object'''
+    """Database user object"""
     username = db.StringField(required=True)
     password = db.StringField(required=True)
     superuser = db.BooleanField(
-        default=False
-    )
+        default=False)
 
 
 class Session(db.Document):
-    '''Database session object'''
+    """Database session object"""
     user = db.ReferenceField(User)
     token = db.StringField(required=True)
     superuser = db.BooleanField(
         required=True,
-        default=False
-    )
+        default=False)
 
 
 class Post(db.Document):
-    '''Database post object'''
+    """Database post object"""
     author = db.ReferenceField(User)
     anonymous = db.BooleanField(
         required=True,
-        default=False
-    )
+        default=False)
     title = db.StringField(required=True)
     image = db.StringField(required=True)
     description = db.StringField(required=False)
 
 
 class Comment(db.Document):
-    '''Database comment object'''
+    """Database comment object"""
     author = db.ReferenceField(User)
     anonymous = db.BooleanField(
         required=True,
-        default=False
-    )
+        default=False)
     post = db.ReferenceField(Post)
     content = db.StringField(required=True)
 

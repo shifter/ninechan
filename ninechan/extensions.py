@@ -1,5 +1,5 @@
-import flask.ext.mongoengine as flask_mongoengine
-import flask.ext.sqlalchemy as flask_sqlalchemy
+import flask_mongoengine
+import flask_sqlalchemy
 
 __author__ = 'takeshix'
 __all__ = ['db']
