@@ -23,11 +23,11 @@ def validate_xss_hard(string):
 
     if 'alert(' in string:
         return False
-
     return True
 
+
 def escape_xss_strings(string):
-    pass
+    return string
 
 
 def generate_session_token():
